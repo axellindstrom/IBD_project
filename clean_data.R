@@ -11,8 +11,13 @@ intra <- read.csv2('./Raw_Data/intra_pop_mean_pairwise_ibd_length.csv', sep = ',
 # Import inter IBD data
 inter <- read.csv2('./Raw_Data/inter_pop_mean_pairwise_ibd_length.csv', sep = ',')
 
+# Remove population with no geo-data
+inter <- inter[inter[,1] != 'mixed-AJ',]
+inter <- inter[inter[,2] != 'mixed-AJ',]
+
 # Import annotation of IBD data
 suppressWarnings(annotation <- as.data.frame(read_excel('./Raw_data/IBD annotation.xlsx')))
+annotation <- annotation[annotation[,1] != 'mixed-AJ',] 
 
 # Extract all unique names of populations
 populations <- as.data.frame(unique(annotation$fid))
@@ -38,8 +43,12 @@ colnames(geolocation) <- c('pop1', 'lat','long')
 geolocation <- na.omit(geolocation)
 
 
+'mixed-AJ' %in% inter[,1]
+inter_no_NAs <- inter[inter[,1] == 'mixed-AJ',]
+
 # Write IBD data and location data to a csv
-write_csv(geolocation, './Geo_data/pop_geo.csv')
-
-
+write_csv(geolocation, './1_Filtered_data/pop_geo.csv')
+write_csv(annotation, './1_Filtered_data/annotations.csv')
+inter
+write_csv(inter, './1_Filtered_data/filtered_inter.csv')
 
