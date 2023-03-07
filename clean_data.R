@@ -36,19 +36,11 @@ for (pop in populations[,1]){
   geolocation <- rbind(geolocation,pop_geo)
 }
 
-# Rename the columns in the geo data frame
-colnames(geolocation) <- c('pop1', 'lat','long')
 
-# Remove NAs from the data
-geolocation <- na.omit(geolocation)
+# Change col names to match colnames in inter data set
+colnames(geolocation) <- c('pop2','lat','long')
 
-
-'mixed-AJ' %in% inter[,1]
-inter_no_NAs <- inter[inter[,1] == 'mixed-AJ',]
-
-# Write IBD data and location data to a csv
-write_csv(geolocation, './1_Filtered_data/pop_geo.csv')
-write_csv(annotation, './1_Filtered_data/annotations.csv')
-inter
-write_csv(inter, './1_Filtered_data/filtered_inter.csv')
+# Merge inter and geo data, geo data relates to pop2
+geo_IBD_data <- inter[,1:3] %>% left_join(geolocation, by = 'pop2')
+write_csv(geo_IBD_data, './1_Filtered_data/geo_IBD_data.csv')
 
