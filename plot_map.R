@@ -5,7 +5,7 @@ rm(list=ls())
 #library(leaflet)
 
 # Function takes a population name as an input and returns a map with related populations
-plot_map_data <- function(input_population){
+plot_map_data <- function(input_population, filter_value){
   getColor <- function(geo_IBD_data) {
     sapply(geo_IBD_data[,3], function(x) {
       if(x <= quant[1]) {
@@ -20,7 +20,8 @@ plot_map_data <- function(input_population){
         "red"
       }})
   }
-  input_pop <- geo_IBD_data[geo_IBD_data[,1] == input_population,]
+  input_pop <- geo_IBD_data[geo_IBD_data[,1] == input_population, ]
+  input_pop <- input_pop[input_pop[,3] <= filter_value, ]
   quant <- quantile(input_pop$mean_pairwise_IBD_length)
   # Set icon style and color based on IBD value
   icons <- awesomeIcons(
@@ -57,19 +58,18 @@ plot_map_data <- function(input_population){
   # Add line from chosen population to related populations
   #addPolylines(lat = lines_data_frame[,1],
   #             lng = lines_data_frame[,2])
-  
-  #return(m)
+  return(m)
 }
 
-
-# function to set color of marker based on IBD
-
-
+get_quantiles <- function(input_population){ 
+  input_pop <- geo_IBD_data[geo_IBD_data[,1] == input_population,]
+  quant <- quantile(input_pop$mean_pairwise_IBD_length)
+  return(quant)
+  }
 
 # Import geo and IBD data
 geo_IBD_data <- read.csv('../1_Filtered_data/geo_IBD_data.csv')
 
 # List of populations to be used as a drop down menu in app
 population_id <- geo_IBD_data[order(geo_IBD_data$pop1),1]
-
 
