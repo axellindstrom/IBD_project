@@ -21,7 +21,8 @@ plot_map_data <- function(input_population, filter_value){
       }})
   }
   input_pop <- geo_IBD_data[geo_IBD_data[,1] == input_population, ]
-  input_pop <- input_pop[input_pop[,3] <= filter_value, ]
+  input_pop <- input_pop[input_pop[,3] >= filter_value[1], ]
+  input_pop <- input_pop[input_pop[,3] <= filter_value[2], ]
   quant <- quantile(input_pop$mean_pairwise_IBD_length)
   # Set icon style and color based on IBD value
   icons <- awesomeIcons(
