@@ -23,3 +23,5 @@ The Rscript *plot_map.R* takes a population as an inpput and plots the related p
 
 ## Web application
 R shiny is used for this web application. Let the user choose a populaton of interest and then plot related populations and display the name of the populations and their IBD.
+
+Sliding bar let the user filter the IBD length to only display populations within the choosen range.
