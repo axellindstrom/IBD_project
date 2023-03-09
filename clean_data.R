@@ -32,15 +32,23 @@ geolocation <- data.frame()
 for (pop in populations[,1]){
   lat = round(sum(annotation[annotation[,1] == pop,2])/length(annotation[annotation[,1] == pop,1]),2)
   long = round(sum(annotation[annotation[,1] == pop,3])/length(annotation[annotation[,1] == pop,3]),2)
-  pop_geo <- c(pop, lat, long)
+  continent_country <- annotation[annotation[,1] == pop,6:7][1,]
+  pop_geo <- c(pop, lat, long, continent_country$continent, continent_country$country)
   geolocation <- rbind(geolocation,pop_geo)
 }
 
-
 # Change col names to match colnames in inter data set
-colnames(geolocation) <- c('pop2','lat','long')
+colnames(geolocation) <- c('pop2','lat','long', 'continent','country')
 
 # Merge inter and geo data, geo data relates to pop2
-geo_IBD_data <- inter[,1:3] %>% left_join(geolocation, by = 'pop2')
-write_csv(geo_IBD_data, './1_Filtered_data/geo_IBD_data.csv')
+geo_IBD_data <- inter[,1:6] %>% left_join(geolocation, by = 'pop2')
+write_csv(geo_IBD_data, './1_Filtered_data/geo_IBD_data2.csv')
+
+
+
+
+
+
+
+
 
