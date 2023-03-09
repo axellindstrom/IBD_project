@@ -10,6 +10,7 @@
 library(shiny)
 source("../plot_map.R")
 library(leaflet)
+
 # Define UI for application that draws a histogram
 fluidPage(titlePanel('IBD patterns'),
           fluidPage(mainPanel(sidebarLayout(position = "left",
@@ -17,13 +18,16 @@ fluidPage(titlePanel('IBD patterns'),
                                                          selectInput("Population", "Select population", c("Choose a population" = "", population_id)),
                                                          sliderInput("range",
                                                                      label = "Filter by IBD lenght:",
-                                                                     min = 0, max = 100, value = c(0, 100))),
+                                                                     min = 0, max = 100, value = c(0, 100)),
+                                                         selectInput("Order_table", "Order by", colnames(filter_table(NULL)))),
                                             mainPanel(
                                               tabsetPanel(
                                                 tabPanel("Map", leafletOutput("mymap")),
                                                 tabPanel("Tables", 
-                                                         textOutput("Quantiles"),
-                                                         tableOutput("quantiles")),
+                                                         textOutput("quantiles_text"),
+                                                         tableOutput("quantiles"),
+                                                         textOutput('selected_pop_size'),
+                                                         tableOutput('Table')),
                                               ))))))
 
 
