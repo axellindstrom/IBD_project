@@ -8,7 +8,7 @@
 #
 
 library(shiny)
-source("../plot_map.R")
+source("../functions.R")
 library(leaflet)
 
 # Define UI for application that draws a histogram

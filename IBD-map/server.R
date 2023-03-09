@@ -8,7 +8,7 @@
 #
 
 library(shiny)
-source("../plot_map.R")
+source("../functions.R")
 library(leaflet)
 
 # Define server logic required to draw a histogram
@@ -31,6 +31,7 @@ function(input, output, session) {
   })
   output$quantiles_text <- renderText({
     'Quantiles'
+    
   })
   event_trigger <- reactive({
     list(input$range, input$Population)
@@ -48,7 +49,8 @@ function(input, output, session) {
                       max = ceiling(max(geo_IBD_data[geo_IBD_data[,1]==input$Population,3])), 
                       step = tick_step(ceiling(max(geo_IBD_data[geo_IBD_data[,1]==input$Population,3]))))
   })
-}
+  print(class(input))
+  }
 
 
 
