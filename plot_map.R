@@ -74,11 +74,15 @@ get_quantiles <- function(input_population){
 
 # Get all related populations in a data frame and filter based on IBD value
 filter_table <- function(IBD_values){
+  # Extract all data linked to chosen population and apply filter
   input_pop <- geo_IBD_data[geo_IBD_data[,1] == IBD_values$Population, ] %>%
     .[.[,3] >= IBD_values$range[1], ] %>%
     .[.[,3] <= IBD_values$range[2], c(2,3,5,6,9,10)]
   
+  # Change column names
   colnames(input_pop) <- c('Population', 'Mean pairwise IBD length', 'Pop size', 'IBD length SE', 'Continent', 'Country')
+  
+  # Order data based on users choice
   input_pop[order(input_pop[,IBD_values$Order_table]),]
 }
 
@@ -91,8 +95,6 @@ geo_IBD_data <- read.csv('../1_Filtered_data/geo_IBD_data2.csv')
 # List of populations to be used as a drop down menu in app
 population_id <- geo_IBD_data[order(geo_IBD_data$pop1),1]
 
-# Define options for order data in table
-order_options <- c('Population', 'Mean pairwise IBD length', 'Pop size', 'IBD length SE', 'Continent', 'Country')
 
 # Change the the tick step of the slider depending on the range of IBD
 tick_step <- function(x){
