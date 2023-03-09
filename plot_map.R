@@ -4,45 +4,46 @@ rm(list=ls())
 # Load necessary libraries
 #library(leaflet)
 
-# Function takes a population name as an input and returns a map with related populations
-plot_map_data <- function(input_population, filter_value){
-  getColor <- function(geo_IBD_data) {
-    sapply(geo_IBD_data[,3], function(x) {
-      if(x <= quant[1]) {
-        "white"
-      } else if(x <= quant[2]) {
-        "lightblue"
-      } else  if (x <= quant[3]){
-        "green"
-      } else  if (x <= quant[4]){
-        "orange"
-      } else{
-        "red"
-      }})
-  }
-  input_pop <- geo_IBD_data[geo_IBD_data[,1] == input_population, ]
-  input_pop <- input_pop[input_pop[,3] >= filter_value[1], ]
-  input_pop <- input_pop[input_pop[,3] <= filter_value[2], ]
-  quant <- quantile(input_pop$mean_pairwise_IBD_length)
-  # Set icon style and color based on IBD value
+getColor <- function(input_pop, input_pop2) {
+  quant <- quantile(input_pop2$mean_pairwise_IBD_length)
+  sapply(input_pop[,3], function(x) {
+    if(x <= quant[1]) {
+      "white"
+    } else if(x <= quant[2]) {
+      "lightblue"
+    } else  if (x <= quant[3]){
+      "green"
+    } else  if (x <= quant[4]){
+      "orange"
+    } else{
+      "red"
+    }})
+}
+
+
+plot_map <- function(){
+  # Plot world map
+  m <- leaflet() %>% 
+    addTiles() %>%
+    return(m)
+}
+
+
+update_map <- function(input){
+  input_pop1 <- geo_IBD_data[geo_IBD_data[,1] == input$Population, ]
+  input_pop <- input_pop1[input_pop1[,3] >= input$range[1], ]
+  input_pop <- input_pop[input_pop[,3] <= input$range[2], ]
+  
   icons <- awesomeIcons(
     icon = 'ios-close',
     iconColor = 'black',
     library = 'ion',
-    markerColor = getColor(input_pop))
+    markerColor = getColor(input_pop, input_pop1))
   
-  # Plot world map
-  m <- leaflet() %>% 
-    addTiles() %>%
+  leafletProxy("mymap") %>%
+    clearMarkers() %>%
+    clearMarkerClusters() %>%
     
-    # Add red circle to location of chosen population
-    addCircleMarkers(lng = geo_IBD_data[geo_IBD_data[,2] == input_population,][1,]$long, 
-                     lat = geo_IBD_data[geo_IBD_data[,2] == input_population,][1,]$lat,
-                     color = 'red',
-                     opacity = 0.7,
-                     label = input_population) %>%
-    
-    # Add marker to all population related to chosen population
     addAwesomeMarkers(lng = input_pop$long, 
                       lat = input_pop$lat,
                       labelOptions = labelOptions(textsize = "12px",
@@ -50,27 +51,57 @@ plot_map_data <- function(input_population, filter_value){
                       icon=icons,
                       
                       # Cluster markers close together
-                      clusterOptions = markerClusterOptions(),
+                     # clusterOptions = markerClusterOptions(),
                       label = paste(input_pop[,2],
                                     ':', 
                                     input_pop$mean_pairwise_IBD_length,
-                                    'cM')) #%>%
+                                    'cM')) %>%
+    addCircleMarkers(lng = geo_IBD_data[geo_IBD_data[,2] == input$Population,][1,]$long, 
+                     lat = geo_IBD_data[geo_IBD_data[,2] == input$Population,][1,]$lat,
+                     color = 'red',
+                     opacity = 0.7,
+                     label = input$Population)
   
-  # Add line from chosen population to related populations
-  #addPolylines(lat = lines_data_frame[,1],
-  #             lng = lines_data_frame[,2])
-  return(m)
 }
+
 
 get_quantiles <- function(input_population){ 
   input_pop <- geo_IBD_data[geo_IBD_data[,1] == input_population,]
-  quant <- quantile(input_pop$mean_pairwise_IBD_length)
+  quant <- t(as.data.frame(quantile(input_pop$mean_pairwise_IBD_length)))
   return(quant)
   }
 
+
+# Get all related populations in a data frame and filter based on IBD value
+filter_table <- function(IBD_values){
+  input_pop <- geo_IBD_data[geo_IBD_data[,1] == IBD_values$Population, ] %>%
+    .[.[,3] >= IBD_values$range[1], ] %>%
+    .[.[,3] <= IBD_values$range[2], c(2,3,5,6,9,10)]
+  
+  colnames(input_pop) <- c('Population', 'Mean pairwise IBD length', 'Pop size', 'IBD length SE', 'Continent', 'Country')
+  input_pop[order(input_pop[,IBD_values$Order_table]),]
+}
+
+
+
+
 # Import geo and IBD data
-geo_IBD_data <- read.csv('../1_Filtered_data/geo_IBD_data.csv')
+geo_IBD_data <- read.csv('../1_Filtered_data/geo_IBD_data2.csv')
 
 # List of populations to be used as a drop down menu in app
 population_id <- geo_IBD_data[order(geo_IBD_data$pop1),1]
+
+# Define options for order data in table
+order_options <- c('Population', 'Mean pairwise IBD length', 'Pop size', 'IBD length SE', 'Continent', 'Country')
+
+# Change the the tick step of the slider depending on the range of IBD
+tick_step <- function(x){
+  if (x>5){
+    return(1)
+  }else{
+    return(0.5)
+  }
+}
+
+
 
