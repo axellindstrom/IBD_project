@@ -49,8 +49,7 @@ function(input, output, session) {
                       max = ceiling(max(geo_IBD_data[geo_IBD_data[,1]==input$Population,3])), 
                       step = tick_step(ceiling(max(geo_IBD_data[geo_IBD_data[,1]==input$Population,3]))))
   })
-  print(class(input))
-  }
+}
 
 
 
