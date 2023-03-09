@@ -13,16 +13,26 @@ library(leaflet)
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
-  output$mymap <- renderLeaflet(plot_map_data(input$Population, input$range))
+  # Render empty map
+  output$mymap <- renderLeaflet(plot_map())
+  
+  # Render table
   output$quantiles <- renderTable({
-    df <- t(as.data.frame(get_quantiles(input$Population)))
-    rownames(df) <- 'IBD legnth (cM)'
-    return(df)
+    get_quantiles(input$Population)
     })
-  output$selected_var <- renderText({ 
-    paste("You have selected", input$range)
+  output$selected_pop_range <- renderText({ 
+    paste("You have selected", input$pop_range)
   })
   output$Quantiles <- renderText({
-    print('Quantiles')
+    'Quantiles'
+  })
+  event_trigger <- reactive({
+    list(input$range, input$Population)
+  })
+  observeEvent(ignoreInit = TRUE, event_trigger(),{
+    update_map(input)
   })
 }
+
+
+
