@@ -19,7 +19,8 @@ fluidPage(titlePanel('IBD patterns'),
                                                          sliderInput("range",
                                                                      label = "Filter by IBD lenght:",
                                                                      min = 0, max = 100, value = c(0, 100)),
-                                                         selectInput("Order_table", "Order by", colnames(filter_table(NULL)))),
+                                                         selectInput("Order_table", "Order by", colnames(filter_table(NULL))),
+                                                         checkboxInput('descending', 'Descending', value = FALSE, width = NULL)),
                                             mainPanel(
                                               tabsetPanel(
                                                 tabPanel("Map", leafletOutput("mymap")),

@@ -39,7 +39,7 @@ function(input, output, session) {
   observeEvent(ignoreInit = TRUE, event_trigger(),{
     update_map(input)
     })
-  output$Table <- renderTable(filter_table(input))
+  output$Table <- renderTable(filter_table(input, input$descending))
   
   observeEvent(ignoreInit = TRUE, input$Population, {
     updateSliderInput(session, 
@@ -49,6 +49,7 @@ function(input, output, session) {
                       max = ceiling(max(geo_IBD_data[geo_IBD_data[,1]==input$Population,3])), 
                       step = tick_step(ceiling(max(geo_IBD_data[geo_IBD_data[,1]==input$Population,3]))))
   })
+  
 }
 
 

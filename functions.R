@@ -73,7 +73,10 @@ get_quantiles <- function(input_population){
 
 
 # Get all related populations in a data frame and filter based on IBD value
-filter_table <- function(input){
+filter_table <- function(input, order_Data = FALSE){
+  if (class(order_Data) == 'logical'){
+    order_Data <- order_Data}
+  
   # Extract all data linked to chosen population and apply filter
   input_pop <- geo_IBD_data[geo_IBD_data[,1] == input$Population, ] %>%
     .[.[,3] >= input$range[1], ] %>%
@@ -83,7 +86,8 @@ filter_table <- function(input){
   colnames(input_pop) <- c('Population', 'Mean pairwise IBD length', 'Pop size', 'IBD length SE', 'Continent', 'Country')
   
   # Order data based on users choice
-  input_pop[order(input_pop[,input$Order_table]),]
+  input_pop[order(input_pop[,input$Order_table], decreasing = order_Data),]
+  
 }
 
 
