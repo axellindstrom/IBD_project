@@ -67,9 +67,16 @@ update_map <- function(input){
 
 get_quantiles <- function(input_population){ 
   input_pop <- geo_IBD_data[geo_IBD_data[,1] == input_population,]
-  quant <- t(as.data.frame(quantile(input_pop$mean_pairwise_IBD_length)))
-  return(quant)
+  quant_values <- t(as.data.frame(quantile(input_pop$mean_pairwise_IBD_length)))
+  if (NA %in% quant_values){
+    quant <- data.frame(col1 = numeric(),col2 = numeric(),col3 = numeric(),col4 = numeric(),col5 = numeric())
+    colnames(quant) <- colnames(quant_values)
+    return(quant)
+  }else{
+    return(quant_values)
   }
+
+}
 
 
 # Get all related populations in a data frame and filter based on IBD value
@@ -108,6 +115,5 @@ geo_IBD_data <- read.csv('../1_Filtered_data/geo_IBD_data2.csv')
 
 # List of populations to be used as a drop down menu in app
 population_id <- geo_IBD_data[order(geo_IBD_data$pop1),1]
-
 
 
