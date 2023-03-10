@@ -6,17 +6,17 @@ library(tidyverse)
 library(readxl)
 
 # Import intra IBD data
-intra <- read.csv2('./Raw_Data/intra_pop_mean_pairwise_ibd_length.csv', sep = ',')
+intra <- read.csv2('../Raw_Data/intra_pop_mean_pairwise_ibd_length.csv', sep = ',')
 
 # Import inter IBD data
-inter <- read.csv2('./Raw_Data/inter_pop_mean_pairwise_ibd_length.csv', sep = ',')
+inter <- read.csv2('../Raw_Data/inter_pop_mean_pairwise_ibd_length.csv', sep = ',')
 
 # Remove population with no geo-data
 inter <- inter[inter[,1] != 'mixed-AJ',]
 inter <- inter[inter[,2] != 'mixed-AJ',]
 
 # Import annotation of IBD data
-suppressWarnings(annotation <- as.data.frame(read_excel('./Raw_data/IBD annotation.xlsx')))
+suppressWarnings(annotation <- as.data.frame(read_excel('../Raw_data/IBD annotation.xlsx')))
 annotation <- annotation[annotation[,1] != 'mixed-AJ',] 
 
 # Extract all unique names of populations
@@ -42,7 +42,7 @@ colnames(geolocation) <- c('pop2','lat','long', 'continent','country')
 
 # Merge inter and geo data, geo data relates to pop2
 geo_IBD_data <- inter[,1:6] %>% left_join(geolocation, by = 'pop2')
-write_csv(geo_IBD_data, './1_Filtered_data/geo_IBD_data2.csv')
+write_csv(geo_IBD_data, '../1_Filtered_data/geo_IBD_data.csv')
 
 
 
