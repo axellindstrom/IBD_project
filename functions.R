@@ -4,6 +4,7 @@ rm(list=ls())
 # Load necessary libraries
 #library(leaflet)
 
+# Assign a color based on which quantile it belongs to
 getColor <- function(filtered_pop, all_pop) {
   quant <- quantile(all_pop$mean_pairwise_IBD_length)
   sapply(filtered_pop[,3], function(x) {
@@ -21,6 +22,7 @@ getColor <- function(filtered_pop, all_pop) {
 }
 
 
+# Render an empty map
 plot_map <- function(){
   # Plot world map
   m <- leaflet() %>% 
@@ -29,6 +31,7 @@ plot_map <- function(){
 }
 
 
+# Updates map with markers based on user input
 update_map <- function(input){
   input_pop1 <- geo_IBD_data[geo_IBD_data[,1] == input$Population, ]
   input_pop <- input_pop1[input_pop1[,3] >= input$range[1], ]
@@ -65,6 +68,7 @@ update_map <- function(input){
 }
 
 
+# Calculate the percentlie cut offs based on IBD length
 get_quantiles <- function(input_population){ 
   input_pop <- geo_IBD_data[geo_IBD_data[,1] == input_population,]
   quant_values <- t(as.data.frame(quantile(input_pop$mean_pairwise_IBD_length)))
