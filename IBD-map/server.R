@@ -37,17 +37,22 @@ function(input, output, session) {
     list(input$range, input$Population)
   })
   observeEvent(ignoreInit = TRUE, event_trigger(),{
-    update_map(input)
+    if (input$Population %in% geo_IBD_data[,1]){
+    update_map(input)}
     })
   output$Table <- renderTable(filter_table(input, input$descending))
   
   observeEvent(ignoreInit = TRUE, input$Population, {
-    updateSliderInput(session, 
-                      "range", 
-                      value = NULL,
-                      min = 0, 
-                      max = ceiling(max(geo_IBD_data[geo_IBD_data[,1]==input$Population,3])), 
-                      step = tick_step(ceiling(max(geo_IBD_data[geo_IBD_data[,1]==input$Population,3]))))
+    if (input$Population %in% geo_IBD_data[,1]){
+      max_val <- ceiling(max(geo_IBD_data[geo_IBD_data[,1]==input$Population,3]))
+      updateSliderInput(session, 
+                        "range", 
+                        value = NULL,
+                        min = 0, 
+                        max = max_val, 
+                        step = tick_step(max_val))
+    }
+    
   })
   
 }

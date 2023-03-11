@@ -5,18 +5,16 @@ rm(list=ls())
 #library(leaflet)
 
 # Assign a color based on which quantile it belongs to
-getColor <- function(filtered_pop, all_pop) {
+get_color <- function(filtered_pop, all_pop) {
   quant <- quantile(all_pop$mean_pairwise_IBD_length)
   sapply(filtered_pop[,3], function(x) {
-    if(x <= quant[1]) {
+    if(x <= quant[2]) {
       "white"
-    } else if(x <= quant[2]) {
-      "lightblue"
-    } else  if (x <= quant[3]){
+    } else if(x <= quant[3]) {
       "green"
     } else  if (x <= quant[4]){
       "orange"
-    } else{
+    } else  if (x > quant[4]){
       "red"
     }})
 }
@@ -36,17 +34,17 @@ update_map <- function(input){
   input_pop1 <- geo_IBD_data[geo_IBD_data[,1] == input$Population, ]
   input_pop <- input_pop1[input_pop1[,3] >= input$range[1], ]
   input_pop <- input_pop[input_pop[,3] <= input$range[2], ]
-  
+ 
   icons <- awesomeIcons(
     icon = 'ios-close',
     iconColor = 'black',
     library = 'ion',
-    markerColor = getColor(input_pop, input_pop1))
+    markerColor = get_color(input_pop, input_pop1))
   
-  leafletProxy("mymap") %>%
+  prox <- leafletProxy("mymap") %>%
     clearMarkers() %>%
     clearMarkerClusters() %>%
-    
+    clearShapes() %>%
     addAwesomeMarkers(lng = input_pop$long, 
                       lat = input_pop$lat,
                       labelOptions = labelOptions(textsize = "12px",
@@ -58,16 +56,50 @@ update_map <- function(input){
                       label = paste(input_pop[,2],
                                     ':', 
                                     input_pop$mean_pairwise_IBD_length,
-                                    'cM')) %>%
-    addCircleMarkers(lng = geo_IBD_data[geo_IBD_data[,2] == input$Population,][1,]$long, 
-                     lat = geo_IBD_data[geo_IBD_data[,2] == input$Population,][1,]$lat,
-                     color = 'red',
-                     opacity = 0.7,
-                     label = input$Population)
+                                    'cM')) 
   
+  if (nrow(input_pop) > 0){
+    line_coordinates <- data.frame()
+    for (pop in input_pop[,2]){
+      # Get coordinates for selected population
+      home_coordinates <- geo_IBD_data[geo_IBD_data[,2] == input$Population, ][1,c(3,7,8)]
+      line_coordinates <- rbind(line_coordinates, home_coordinates)
+      # Get coordinates for each population linked to selected population
+      pop2 <- input_pop[input_pop[,2] == pop, ][1,c(3,7,8)]
+      line_coordinates <- rbind(line_coordinates,pop2)
+    }
+    for (num in seq(2,nrow(line_coordinates),by=2)){
+      prox %>% addPolylines(lng = line_coordinates[(num-1):num,3], 
+                            lat = line_coordinates[(num-1):num,2], 
+                            weight = get_weight(line_coordinates[num,1],input_pop1))
+    }
+    prox %>% addCircleMarkers(lng = geo_IBD_data[geo_IBD_data[,2] == input$Population,][1,]$long, 
+                              lat = geo_IBD_data[geo_IBD_data[,2] == input$Population,][1,]$lat,
+                              color = 'red',
+                              opacity = 0.7,
+                              label = input$Population)
+  }else{
+    prox %>% addCircleMarkers(lng = geo_IBD_data[geo_IBD_data[,2] == input$Population,][1,]$long, 
+                              lat = geo_IBD_data[geo_IBD_data[,2] == input$Population,][1,]$lat,
+                              color = 'red',
+                              opacity = 0.7,
+                              label = input$Population)
+  }
+    }
+
+get_weight <- function(line_coordinates, all_pop ) {
+  quant <- quantile(all_pop$mean_pairwise_IBD_length)
+  weight <- as.numeric(line_coordinates)
+    if(weight <= quant[2]) {
+      return(1)
+    } else if(weight <= quant[3]) {
+      return(10)
+    } else  if (weight <= quant[4]){
+      return(20)
+    } else  if (weight > quant[4]){
+      return(30)
+    }
 }
-
-
 # Calculate the percentlie cut offs based on IBD length
 get_quantiles <- function(input_population){ 
   input_pop <- geo_IBD_data[geo_IBD_data[,1] == input_population,]
@@ -115,9 +147,8 @@ tick_step <- function(x){
 
 
 # Import geo and IBD data
-geo_IBD_data <- read.csv('../1_Filtered_data/geo_IBD_data2.csv')
+geo_IBD_data <- read.csv('../1_Filtered_data/geo_IBD_data.csv')
 
 # List of populations to be used as a drop down menu in app
 population_id <- geo_IBD_data[order(geo_IBD_data$pop1),1]
-
 

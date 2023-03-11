@@ -18,15 +18,16 @@ fluidPage(titlePanel('IBD patterns'),
                                                          selectInput("Population", "Select population", c("Choose a population" = "", population_id)),
                                                          sliderInput("range",
                                                                      label = "Filter by IBD lenght:",
-                                                                     min = 0, max = 100, value = c(0, 100)),
-                                                         selectInput("Order_table", "Order by", colnames(filter_table(NULL))),
-                                                         checkboxInput('descending', 'Descending', value = FALSE, width = NULL)),
+                                                                     min = 0, max = 100, value = c(0, 100))),
                                             mainPanel(
                                               tabsetPanel(
                                                 tabPanel("Map", leafletOutput("mymap")),
                                                 tabPanel("Tables", 
                                                          textOutput("quantiles_text"),
                                                          tableOutput("quantiles"),
+                                                         
+                                                         selectInput("Order_table", "Order by", colnames(filter_table(NULL))),
+                                                         checkboxInput('descending', 'Descending', value = FALSE, width = NULL),
                                                          textOutput('selected_pop_size'),
                                                          tableOutput('Table')),
                                               ))))))
