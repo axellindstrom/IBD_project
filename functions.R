@@ -9,7 +9,7 @@ get_color <- function(filtered_pop, all_pop) {
   quant <- quantile(all_pop$mean_pairwise_IBD_length)
   sapply(filtered_pop[,3], function(x) {
     if(x <= quant[2]) {
-      "white"
+      "blue"
     } else if(x <= quant[3]) {
       "green"
     } else  if (x <= quant[4]){
@@ -44,19 +44,7 @@ update_map <- function(input){
   prox <- leafletProxy("mymap") %>%
     clearMarkers() %>%
     clearMarkerClusters() %>%
-    clearShapes() %>%
-    addAwesomeMarkers(lng = input_pop$long, 
-                      lat = input_pop$lat,
-                      labelOptions = labelOptions(textsize = "12px",
-                                                  style = list("color" = 'darkgray')),
-                      icon=icons,
-                      
-                      # Cluster markers close together
-                     # clusterOptions = markerClusterOptions(),
-                      label = paste(input_pop[,2],
-                                    ':', 
-                                    input_pop$mean_pairwise_IBD_length,
-                                    'cM')) 
+    clearShapes() 
   
   if (nrow(input_pop) > 0){
     line_coordinates <- data.frame()
@@ -71,13 +59,26 @@ update_map <- function(input){
     for (num in seq(2,nrow(line_coordinates),by=2)){
       prox %>% addPolylines(lng = line_coordinates[(num-1):num,3], 
                             lat = line_coordinates[(num-1):num,2], 
-                            weight = get_weight(line_coordinates[num,1],input_pop1))
+                            weight = get_weight(line_coordinates[num,1],input_pop1),
+                            color = 'darkgrey')
     }
-    prox %>% addCircleMarkers(lng = geo_IBD_data[geo_IBD_data[,2] == input$Population,][1,]$long, 
+    prox %>% addMarkers(lng = geo_IBD_data[geo_IBD_data[,2] == input$Population,][1,]$long, 
                               lat = geo_IBD_data[geo_IBD_data[,2] == input$Population,][1,]$lat,
-                              color = 'red',
-                              opacity = 0.7,
                               label = input$Population)
+    prox %>%
+      addCircleMarkers(lng = input_pop$long, 
+                       lat = input_pop$lat,
+                       labelOptions = labelOptions(textsize = "12px",
+                                                   style = list("color" = 'darkgray')),
+                       #icon=icons,
+                       color = get_color(input_pop, input_pop1),
+                       # Cluster markers close together
+                       # clusterOptions = markerClusterOptions(),
+                       label = paste(input_pop[,2],
+                                     ':', 
+                                     input_pop$mean_pairwise_IBD_length,
+                                     'cM')) 
+    
   }else{
     prox %>% addCircleMarkers(lng = geo_IBD_data[geo_IBD_data[,2] == input$Population,][1,]$long, 
                               lat = geo_IBD_data[geo_IBD_data[,2] == input$Population,][1,]$lat,
@@ -103,13 +104,15 @@ get_weight <- function(line_coordinates, all_pop ) {
 # Calculate the percentlie cut offs based on IBD length
 get_quantiles <- function(input_population){ 
   input_pop <- geo_IBD_data[geo_IBD_data[,1] == input_population,]
+  quant <- data.frame(col1 = numeric(),col2 = numeric(),col3 = numeric(),col4 = numeric(),col5 = numeric())
   quant_values <- t(as.data.frame(quantile(input_pop$mean_pairwise_IBD_length)))
   if (NA %in% quant_values){
-    quant <- data.frame(col1 = numeric(),col2 = numeric(),col3 = numeric(),col4 = numeric(),col5 = numeric())
     colnames(quant) <- colnames(quant_values)
-    return(quant)
+    return(quant[,2:5])
   }else{
-    return(quant_values)
+    colnames(quant) <- colnames(quant_values)
+    quant_values <- rbind(quant,quant_values)
+    return(quant_values[,2:5])
   }
 
 }

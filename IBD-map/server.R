@@ -42,6 +42,13 @@ function(input, output, session) {
     })
   output$Table <- renderTable(filter_table(input, input$descending))
   
+  output$color_Table <- renderTable({
+    table <- get_quantiles(input$Population)
+    colnames(table) <- c('Blue','Green','Orange','Red')
+    table})
+  
+  output$num_of_pop <- renderText(paste0('Number of populations related to ', input$Population,': ',nrow(geo_IBD_data[geo_IBD_data[,1]==input$Population,])))
+  
   observeEvent(ignoreInit = TRUE, input$Population, {
     if (input$Population %in% geo_IBD_data[,1]){
       max_val <- ceiling(max(geo_IBD_data[geo_IBD_data[,1]==input$Population,3]))

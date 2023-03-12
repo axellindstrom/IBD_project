@@ -21,7 +21,9 @@ fluidPage(titlePanel('IBD patterns'),
                                                                      min = 0, max = 100, value = c(0, 100))),
                                             mainPanel(
                                               tabsetPanel(
-                                                tabPanel("Map", leafletOutput("mymap")),
+                                                tabPanel("Map", leafletOutput("mymap"),
+                                                         tableOutput('color_Table'),
+                                                         textOutput('num_of_pop')),
                                                 tabPanel("Tables", 
                                                          textOutput("quantiles_text"),
                                                          tableOutput("quantiles"),
