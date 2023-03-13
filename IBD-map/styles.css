@@ -1,0 +1,41 @@
+div.outer {
+  position: fixed;
+  top: 110px;
+  left: 353px;
+  right: 0;
+  bottom: 0;
+  overflow: scroll;
+  padding: 0;
+}
+
+div.side {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0;
+    overflow: hidden;
+    padding: 0;
+  }
+
+div.tab {
+    position: fixed;
+    top: 4px;
+    left: 309px;
+    right: 200px;
+    bottom: 10px;
+    overflow: visible;
+    padding: 0;
+  }
+
+div.sidebar {
+    position: fixed;
+    top: 70px;
+    left: 2px;
+    right: 200px;
+    bottom: 10px;
+    overflow: hidden;
+    padding: 0;
+  }
+
+

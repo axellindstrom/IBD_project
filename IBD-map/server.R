@@ -14,9 +14,10 @@ library(leaflet)
 # Define server logic required to draw a histogram
 function(input, output, session) {
   # Render empty map
-  output$leaf=renderUI({
-    leafletOutput('myMap', width = "10%", height = 1000)
-  })
+  #output$leaf=renderUI({
+   # leafletOutput('myMap')
+    
+ # })
   output$mymap <- renderLeaflet(plot_map())
   
   # Render table
@@ -40,14 +41,16 @@ function(input, output, session) {
     if (input$Population %in% geo_IBD_data[,1]){
     update_map(input)}
     })
-  output$Table <- renderTable(filter_table(input, input$descending))
+  output$Table <- renderTable(width = '80%', {
+    pop_table <- filter_table(input, input$descending)
+    pop_table})
   
-  output$color_Table <- renderTable({
+  output$color_Table <- renderTable(width = '60%',{
     table <- get_quantiles(input$Population)
     colnames(table) <- c('Blue','Green','Orange','Red')
     table})
   
-  output$num_of_pop <- renderText(paste0('Number of populations related to ', input$Population,': ',nrow(geo_IBD_data[geo_IBD_data[,1]==input$Population,])))
+  output$num_of_pop <- renderText(paste0('Number of populations related to the ', input$Population,' population: ',nrow(geo_IBD_data[geo_IBD_data[,1]==input$Population,])))
   
   observeEvent(ignoreInit = TRUE, input$Population, {
     if (input$Population %in% geo_IBD_data[,1]){
