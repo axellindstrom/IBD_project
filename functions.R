@@ -25,6 +25,7 @@ plot_map <- function(){
   # Plot world map
   m <- leaflet() %>% 
     addTiles() %>%
+    setView(lng=13.191128010559968, lat=55.705926544548944, zoom=2)
     return(m)
 }
 
