@@ -65,7 +65,7 @@ if (!file.exists(paste0(parent_d, required_dir[2],'/geo_IBD_data.csv'))){
   warning('Expected dataset in "1_Filtered_data: no such directory exist. \n Creating datasets')
   
   # Load in required function to create required data
-  source(paste0(parent_d,'/clean_data.R'))
+  source(paste0(parent_d,'/Scripts/clean_data.R'))
   
   # Run function to merge datsets into required dataset
   merge_data(parent_d, required_dir[2])

@@ -43,7 +43,7 @@ merge_data <- function(path, destination_d){
   
   # Merge inter and geo data, geo data relates to pop2
   geo_IBD_data <- inter[,1:6] %>% left_join(geolocation, by = 'pop2')
-  write_csv(geo_IBD_data, paste0(path, destination_d, '/geo_IBD_data3.csv'))
+  write_csv(geo_IBD_data, paste0(path, destination_d, '/geo_IBD_data.csv'))
 }
 
 
