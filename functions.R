@@ -1,8 +1,11 @@
-#!/usr/bin/env Rscript
-rm(list=ls())
+#!/usr/bin/env Rscript'
 
-# Load necessary libraries
-#library(leaflet)
+# Description: This script contains all functions used in the Shiny app 
+# Author: Axel Lindström
+# Date: 2023-03-14
+# Version: 1.0
+
+# rm(list=ls())
 
 # Assign a color based on which quantile it belongs to
 get_color <- function(filtered_pop, all_pop) {
@@ -89,6 +92,7 @@ update_map <- function(input){
   }
     }
 
+
 get_weight <- function(line_coordinates, all_pop ) {
   quant <- quantile(all_pop$mean_pairwise_IBD_length)
   weight <- as.numeric(line_coordinates)
@@ -102,6 +106,8 @@ get_weight <- function(line_coordinates, all_pop ) {
       return(30)
     }
 }
+
+
 # Calculate the percentlie cut offs based on IBD length
 get_quantiles <- function(input_population){ 
   input_pop <- geo_IBD_data[geo_IBD_data[,1] == input_population,]
@@ -120,7 +126,7 @@ get_quantiles <- function(input_population){
 
 
 # Get all related populations in a data frame and filter based on IBD value
-filter_table <- function(input, order_Data = FALSE){
+filter_table <- function(input, order_Data = FALSE, geo_IBD_data){
   if (class(order_Data) == 'logical'){
     order_Data <- order_Data}
   
@@ -148,11 +154,65 @@ tick_step <- function(x){
 }
 
 
+check_requirments <- function(parent_d){
+  # Vector containing all the packages used in for the app to run
+  list.of.packages <- c("shiny", 
+                        "leaflet", 
+                        "tidyverse", 
+                        "shinythemes",
+                        "readxl")
+  
+  
+  # Check if all the packages are installed
+  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+  
+  
+  # If required package not installed, install the missing packages
+  if(length(new.packages)) install.packages(new.packages)
+  
+  
+  # Load in all the required packages
+  for(pkg in list.of.packages){
+    eval(bquote(library(.(pkg))))
+  }
+  
+  
+  
+  
+  
+  
+  # Store names of required directories
+  required_dir <- c('/Raw_data', '/1_Filtered_data')
+  
+  # Check if the directory containing the raw data exist
+  if (!dir.exists(paste0(parent_d,required_dir[1]))){
+    
+    # If directory do not exist stop the app and print error message
+    stop('Missing data \n Expected dataset in "Raw_data": no such directory exist.')
+  }
+  
+  
+  # Check if directory 1_Filtered_data exist
+  if (!dir.exists(paste0(parent_d,required_dir[2]))){
+    # If directory do not exist print warning
+    warning(paste(paste0(parent_d,required_dir[2]), 'do not exist.','\n','Directory created'))
+    # Create directory 1_Filtered_data
+    dir.create(paste0(parent_d,required_dir[2]))
+  }
+  
+  
+  # Check if the required data in the required directory exist
+  if (!file.exists(paste0(parent_d, required_dir[2],'/geo_IBD_data3.csv'))){
+    # If if data do not exist print warning
+    warning('Expected dataset in "1_Filtered_data: no such directory exist. \n Creating datasets')
+    
+    # Load in required function to create required data
+    source(paste0(parent_d,'/clean_data.R'))
+    
+    # Run function to merge datsets into required dataset
+    merge_data(parent_d, required_dir[2])
+    
 
-
-# Import geo and IBD data
-geo_IBD_data <- read.csv('../1_Filtered_data/geo_IBD_data.csv')
-
-# List of populations to be used as a drop down menu in app
-population_id <- geo_IBD_data[order(geo_IBD_data$pop1),1]
+  }
+}
 
