@@ -12,12 +12,16 @@
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
+  
+  # Render an empty map
   output$mymap <- renderLeaflet(plot_map())
   
-  # Render table
+  # Render table of the quantiles
   output$quantiles <- renderTable({
     get_quantiles(input$Population)
     })
+  
+  # Print information of the populations size of the selected population
   output$selected_pop_size <- renderText({ 
     paste0('Number of individuals included in chosen population (',
            input$Population,
@@ -25,18 +29,23 @@ function(input, output, session) {
            geo_IBD_data[geo_IBD_data[,2] == input$Population, 5][1])
   })
   
+  # Track updates of the slider and drop down menue in the side menu
   event_trigger <- reactive({
     list(input$range, input$Population)
   })
+  
+  # If selected population or IBD length range change update map
   observeEvent(ignoreInit = TRUE, event_trigger(),{
     if (input$Population %in% geo_IBD_data[,1]){
     update_map(input)}
     })
+  
+  # Render a table of information about related populations
   output$Table <- renderTable(width = '80%', {
     pop_table <- filter_table(input, input$descending)
     pop_table})
   
-  output$num_of_pop <- renderText(paste0('Number of populations related to the ', input$Population,' population: ',nrow(geo_IBD_data[geo_IBD_data[,1]==input$Population,])))
+  # Add explanation of color on the map
   output$bluecolor <- renderText({
     color_table <- get_quantiles(input$Population)
     colror_range_max <- round(color_table[,1], 2)
@@ -63,7 +72,10 @@ function(input, output, session) {
     paste('>', color_range_min)
   })
   
-    observeEvent(ignoreInit = TRUE, input$Population, {
+  # Update slider range depending on the minimum and maximum IBD length 
+  # among all the related populations.
+  # Only updates when a new population is selected
+  observeEvent(ignoreInit = TRUE, input$Population, {
     if (input$Population %in% geo_IBD_data[,1]){
       max_val <- ceiling(max(geo_IBD_data[geo_IBD_data[,1]==input$Population,3]))
       updateSliderInput(session, 
