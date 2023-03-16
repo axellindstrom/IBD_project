@@ -4,7 +4,7 @@
 #
 # Known bugs: Some populations in the data set do not have any coordinates
 # for example "Eritrean". However, the related populations in the dataset are 
-# still plotted to the map but the "home" destination is not displayed.
+# still plotted to the map but the selected population is not displayed.
 #
 
 
