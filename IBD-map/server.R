@@ -7,17 +7,11 @@
 #    http://shiny.rstudio.com/
 #
 
-library(shiny)
-source("../functions.R")
-library(leaflet)
+
+
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
-  # Render empty map
-  #output$leaf=renderUI({
-   # leafletOutput('myMap')
-    
- # })
   output$mymap <- renderLeaflet(plot_map())
   
   # Render table
@@ -30,10 +24,7 @@ function(input, output, session) {
            '): ',
            geo_IBD_data[geo_IBD_data[,2] == input$Population, 5][1])
   })
-  output$quantiles_text <- renderText({
-    'Quantiles'
-    
-  })
+  
   event_trigger <- reactive({
     list(input$range, input$Population)
   })
@@ -45,14 +36,34 @@ function(input, output, session) {
     pop_table <- filter_table(input, input$descending)
     pop_table})
   
-  output$color_Table <- renderTable(width = '60%',{
-    table <- get_quantiles(input$Population)
-    colnames(table) <- c('Blue','Green','Orange','Red')
-    table})
-  
   output$num_of_pop <- renderText(paste0('Number of populations related to the ', input$Population,' population: ',nrow(geo_IBD_data[geo_IBD_data[,1]==input$Population,])))
+  output$bluecolor <- renderText({
+    color_table <- get_quantiles(input$Population)
+    colror_range_max <- round(color_table[,1], 2)
+    paste('<', colror_range_max)
+    })
   
-  observeEvent(ignoreInit = TRUE, input$Population, {
+  output$greencolor <- renderText({
+    color_table <- get_quantiles(input$Population)
+    color_range_min <- round(color_table[,1], 2)
+    colror_range_max <- round(color_table[,2], 2)
+    paste(color_range_min, '-', colror_range_max)
+  })
+  
+  output$orangecolor <- renderText({
+    color_table <- get_quantiles(input$Population)
+    color_range_min <- round(color_table[,2], 2)
+    colror_range_max <- round(color_table[,3], 2)
+    paste(color_range_min, '-', colror_range_max)
+  })
+  
+  output$redcolor <- renderText({
+    color_table <- get_quantiles(input$Population)
+    color_range_min <- round(color_table[,3], 2)
+    paste('>', color_range_min)
+  })
+  
+    observeEvent(ignoreInit = TRUE, input$Population, {
     if (input$Population %in% geo_IBD_data[,1]){
       max_val <- ceiling(max(geo_IBD_data[geo_IBD_data[,1]==input$Population,3]))
       updateSliderInput(session, 
