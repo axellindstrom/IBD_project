@@ -52,7 +52,7 @@ In addition, a table displaying the filtered data (including, populations linked
 ## Running app
 To run the app from the command line:
 
-    Rscript -e 'library(methods); shiny::runApp("geoIBD/", launch.browser = TRUE)'
+    Rscript -e 'library(methods); shiny::runApp("GeoIBD/", launch.browser = TRUE)'
 
 Where **IBD-map/** is the path to the directory containing the app (ui.R and server.R). 
 
