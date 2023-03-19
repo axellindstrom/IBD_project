@@ -10,8 +10,7 @@
 
 
 # Set working directory to directory current script is located in
-setwd(dirname(rstudioapi::getSourceEditorContext()$path))
-parent_d <- dirname(dirname(rstudioapi::getSourceEditorContext()$path))
+parent_d <- dirname(getwd())
 
 # Vector containing all the packages used in for the app to run
 list.of.packages <- c("shiny", 
@@ -43,10 +42,10 @@ for(pkg in list.of.packages){
 required_dir <- c('/Raw_data', '/1_Filtered_data')
 
 # Check if the directory containing the raw data exist
-if (!dir.exists(paste0(parent_d,required_dir[1]))){
+if (!dir.exists(paste0(parent_d,required_dir[1])) || !file.exists(paste0(parent_d,required_dir[1],'/inter_pop_mean_pairwise_ibd_length.csv'))){
   
   # If directory do not exist stop the app and print error message
-  stop('Missing data \n Expected dataset in "Raw_data": no such directory exist.')
+  stop('Missing data \n Expected dataset in "Raw_data": directory do not contain required dataset or no such directory exist.')
 }
 
 
