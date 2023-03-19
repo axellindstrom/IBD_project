@@ -29,13 +29,16 @@ div.tab {
   }
 
 div.sidebar {
-    position: fixed;
+    position: absolute;
     top: 70px;
     left: 2px;
     right: 1100px;
     bottom: 0;
     overflow: hidden;
     padding: 0;
+    width:300px; 
+    max-width:300px; 
+    display: inline-block;
   }
 
 

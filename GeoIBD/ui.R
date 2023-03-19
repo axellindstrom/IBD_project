@@ -111,14 +111,14 @@ fluidPage(
                                                   label = "Filter by IBD lenght:",
                                                   min = 0,
                                                   max = 100,
-                                                  value = c(0, 100)))),
+                                                  value = c(0, 100))))),
                         
                 # Add tabs and title      
                 tabsetPanel(div(class='side', 
                                         tags$head(includeCSS("styles.css")),
                                 
                                 # Add title and theme to the tabs        
-                                navbarPage(title ='IBD patterns',
+                                navbarPage(title ='GeoIBD',
                                            theme = shinytheme("flatly"),
                                            
                                            # Add a main tab called "Map"
@@ -126,9 +126,9 @@ fluidPage(
                                                     # Set bounds for the map
                                                     div(class="outer",
                                                         tags$head(includeCSS("styles.css")),
-                                                        leafletOutput("mymap", height="66vh", width = '118vh'),
+                                                        leafletOutput("mymap"),#, height="66vh", width = '118vh'),
                                                         
-                                                        # Add colored icons and values tunder map
+                                                        # Add colored icons and values under map
                                                         div(style="display: inline-block;vertical-align:top; width: 150px;",h4(tags$style(".circle1 {color:#2243E8}"),
                                                              icon("circle", class = 'circle1'), textOutput('bluecolor'))),
                                                             div(style="display: inline-block;vertical-align:top; width: 150px;",h4(tags$style(".circle2 {color:#177D14}"),
@@ -164,7 +164,7 @@ fluidPage(
                                                         textOutput('selected_pop_size'),
                                                         
                                                         # Add table of related populations
-                                                        tableOutput('Table')))))))
+                                                        tableOutput('Table'))))))
                                               ))
 
 
