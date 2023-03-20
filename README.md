@@ -57,13 +57,15 @@ Sliding bar let the user filter the IBD length to only display populations withi
 
 In addition, a table displaying the filtered data (including, populations linked to the chosen population, mean pairwise IBD length, population size, IBD length SE, continent and country of the linked populations) can be accessed in a second tab (*Tables*) at the top menu. Here, the quantile cut offs are also displayed. The user can also specify how the table should be sorted by changing the sorting method in the drop down meu to the right. 
 
-## Running app
-To run the app from the command line:
+## Running GeoIBD
+To run GeoIBD from the command line:
 
     Rscript -e 'library(methods); shiny::runApp("GeoIBD/", launch.browser = TRUE)'
 
 Where **GeoIBD/** is the path to the directory containing the app (ui.R and server.R). 
 
-Upon launch of the app the app will check if the necessary directories and files are in place. If the directory **Raw_data** or the files in **Raw_data** is missing the app will not be launched. Additionally, upon launch the app will check that the directory **1_Filtered_data** exist, if not, it will be created. if **1_Filtered_data** exist it will check that **geo_IBD_data.csv** exist in the **1_Filtered_data** directory, if not, the ***clean_data.R*** script will be called and **geo_IBD_data.csv** will be created. All necessary packages will also be installed if not already installed.
+It is also possibe to open either **server.R** or **ui.R** in Rstudio in the GeoIBD directory and launch the app from there.
+
+Upon launch of GeoIBD the app will check if the necessary directories and files are in place. If the directory **Raw_data** or the files in **Raw_data** is missing the app will not be launched. Additionally, upon launch the app will check that the directory **1_Filtered_data** exist, if not, it will be created. if **1_Filtered_data** exist it will check that **geo_IBD_data.csv** exist in the **1_Filtered_data** directory, if not, the ***clean_data.R*** script will be called and **geo_IBD_data.csv** will be created. All necessary packages will also be installed if not already installed.
 
 **Note**, R and the library shiny is required to be installed for the app to run. all other libraries will automatically be installed if needed.
