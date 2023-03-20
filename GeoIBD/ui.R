@@ -25,7 +25,12 @@ new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"
 
 
 # If required package not installed, install the missing packages
-if(length(new.packages)) install.packages(new.packages)
+if(length(new.packages)){
+  for (package in new.packages){
+    warning(paste(package, 'not installed \n Insatlling', package))
+    install.packages(package, repos = "https://ftp.acc.umu.se/mirror/CRAN/")
+  }
+} 
 
 
 # Load in all the required packages
@@ -101,9 +106,9 @@ fluidPage(
                              
                              # Create a section of the side menu with a drop down menu
                              # with all populations to chose from
-                             tabPanel(selectInput("Population",
+                             tabPanel(suppressWarnings(selectInput("Population",
                                                   "Select population",
-                                                  c("Choose a population" = "", population_id))),
+                                                  c("Choose a population" = "", population_id)))),
                              
                              # Add slider to let user filter the populations 
                              # based on IBD length
@@ -114,7 +119,7 @@ fluidPage(
                                                   value = c(0, 100))))),
                         
                 # Add tabs and title      
-                tabsetPanel(div(class='side', 
+            suppressWarnings(tabsetPanel(div(class='side', 
                                         tags$head(includeCSS("styles.css")),
                                 
                                 # Add title and theme to the tabs        
@@ -154,7 +159,7 @@ fluidPage(
                                                         # Add quantile table
                                                         tableOutput("quantiles"),
                                                         
-                                                        # Add drop down menu to select how to order data
+                                                        # Add drop down menu to select how to order data 
                                                         selectInput("Order_table", "Order by", colnames(filter_table(NULL))),
                                                         
                                                         # Add checkbox to select how to order data in table
@@ -164,7 +169,7 @@ fluidPage(
                                                         textOutput('selected_pop_size'),
                                                         
                                                         # Add table of related populations
-                                                        tableOutput('Table'))))))
+                                                        tableOutput('Table')))))))
                                               ))
 
 
