@@ -12,7 +12,7 @@ Note, this tool does not analyze the provided data, nor does it provide an expla
     leaflet v2.1.1          # Used to render and manipulate maps.
     shiny v1.7.4            # Used to build the ap user interface and server side.
     shinythemes v1.2.0      # Used to add themes to the app.
-
+ 
 ## Data used
 The following data sets were collected from the BINP29 canvas page.
 
@@ -64,4 +64,6 @@ To run the app from the command line:
 
 Where **GeoIBD/** is the path to the directory containing the app (ui.R and server.R). 
 
-Upon launch of the app the app will check if the necessary directories and files are in place. If the directory **Raw_data** or the files in **Raw_data** is missing the app will not launched. Additionally, upon launch the app will check that the directory **1_Filtered_data** exist, if not, it will be created. if **1_Filtered_data** exist it will check that **geo_IBD_data.csv** exist int the **1_Filtered_data** directory, if not, the ***clean_data.R*** script will be called and it will be created. All necessary packages will also be installed if not already installed.
+Upon launch of the app the app will check if the necessary directories and files are in place. If the directory **Raw_data** or the files in **Raw_data** is missing the app will not be launched. Additionally, upon launch the app will check that the directory **1_Filtered_data** exist, if not, it will be created. if **1_Filtered_data** exist it will check that **geo_IBD_data.csv** exist in the **1_Filtered_data** directory, if not, the ***clean_data.R*** script will be called and **geo_IBD_data.csv** will be created. All necessary packages will also be installed if not already installed.
+
+**Note**, R and the library shiny is required to be installed for the app to run. all other libraries will automatically be installed if needed.
